@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>한국사 퀴즈 🏆 | 완자 한국사 대비</title>
+  <meta name="description" content="완자 한국사 + 해냄에듀 교과서 기반 재미있는 한국사 퀴즈 앱">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- ===== 홈 화면 ===== -->
+    <section id="screen-home">
+      <!-- 헤더 -->
+      <header class="app-header">
+        <span class="logo">📚</span>
+        <div>
+          <h1>한국사 퀴즈</h1>
+          <div class="header-sub">완자 한국사 + 해냄에듀 교과서 기반</div>
+        </div>
+        <div class="header-points">
+          <span id="total-points-display">0</span>점
+        </div>
+      </header>
+
+      <!-- D-DAY 배너 -->
+      <div style="padding: 0 20px; padding-top: 20px;">
+        <div class="dday-banner" id="dday-banner">
+          <div class="dday-icon">⏰</div>
+          <div>
+            <div class="dday-text" id="dday-text">시험까지 계산 중...</div>
+            <div class="dday-sub">2026년 8월 11일 한국사 시험 대비!</div>
+          </div>
+        </div>
+
+        <!-- 포인트 카드 -->
+        <div class="points-card">
+          <div class="points-label">🏆 총 누적 포인트</div>
+          <div style="display:flex; align-items:baseline; justify-content:center; gap:6px;">
+            <span class="points-value" id="total-points-home">0</span>
+            <span class="points-unit">점</span>
+          </div>
+          <div class="round-info">현재 Round <span id="round-display">1</span> | 전체 <span id="total-questions-count">100</span>문제</div>
+        </div>
+
+        <!-- 통계 -->
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-value" id="stats-played">0</div>
+            <div class="stat-label">푼 문제</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" style="color: var(--success)" id="stats-correct">0</div>
+            <div class="stat-label">정답</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" style="color: var(--danger)" id="stats-wrong">0</div>
+            <div class="stat-label">오답</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" style="color: var(--warning)" id="stats-accuracy">0%</div>
+            <div class="stat-label">정답률</div>
+          </div>
+        </div>
+
+        <!-- 포인트 시스템 안내 -->
+        <div style="background: var(--primary-light); border-radius: 12px; padding: 14px 16px; margin-bottom: 20px; border: 1.5px solid #C7D2FE;">
+          <div style="font-size: 13px; font-weight: 800; color: var(--primary); margin-bottom: 8px;">💡 포인트 시스템</div>
+          <div style="font-size: 12px; color: var(--gray-600); line-height: 1.8;">
+            ✅ 처음 맞추기: <strong>+100점</strong><br>
+            🔄 틀린 후 재도전 성공: <strong>+50점</strong><br>
+            ❌ 오답: <strong>-10점</strong><br>
+            🎁 라운드 클리어: <strong>+200점</strong><br>
+            🏆 퍼펙트 클리어(틀린 문제 0): <strong>+700점</strong>
+          </div>
+        </div>
+
+        <!-- 게임 규칙 -->
+        <div style="background: #F0FDF4; border-radius: 12px; padding: 14px 16px; margin-bottom: 20px; border: 1.5px solid #BBF7D0;">
+          <div style="font-size: 13px; font-weight: 800; color: var(--success); margin-bottom: 8px;">📋 게임 규칙</div>
+          <div style="font-size: 12px; color: var(--gray-600); line-height: 1.8;">
+            • 1라운드 = 20문제 (랜덤 출제)<br>
+            • 틀린 문제는 라운드 마지막에 다시 출제<br>
+            • 맞출 때까지 계속 도전! (포기 불가)<br>
+            • 정답 맞추면 해설 확인 가능<br>
+            • 틀린 문제는 나중에 "오답 복습"으로 재도전
+          </div>
+        </div>
+
+        <!-- 액션 버튼 -->
+        <div class="action-buttons">
+          <button id="btn-start" class="btn-primary">
+            🚀 새 라운드 시작 (20문제)
+          </button>
+          <button id="btn-retry-wrong" class="btn-secondary" disabled>
+            🔄 오답 복습 모드
+          </button>
+          <div class="wrong-bank-info">
+            📌 틀린 문제 보관함: <strong id="wrong-bank-count">0</strong>개 모임
+          </div>
+        </div>
+
+        <!-- 데이터 초기화 버튼 -->
+        <div style="text-align:center; margin-top: 20px; padding-bottom: 8px;">
+          <button id="btn-reset" style="background:none; border:none; font-size:12px; color:var(--gray-400); cursor:pointer; text-decoration:underline; padding:6px;">
+            🔄 게임 데이터 초기화
+          </button>
+        </div>
+
+        <!-- 푸터 -->
+        <div style="text-align:center; padding-bottom: 24px; font-size: 11px; color: var(--gray-400);">
+          완자 한국사 + 해냄에듀 한국사1·2 기반 | 총 100문제
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 라운드 화면 ===== -->
+    <section id="screen-round" class="hidden">
+      <!-- HUD -->
+      <div class="round-hud">
+        <div class="hud-top">
+          <div class="hud-title" id="round-title">Round 1</div>
+          <div class="hud-stats">
+            <div class="hud-stat">
+              <span class="hud-stat-label">진행</span>
+              <span class="hud-stat-value" id="hud-progress">0/20</span>
+            </div>
+            <div class="hud-stat">
+              <span class="hud-stat-label">라운드 점수</span>
+              <span class="hud-stat-value" id="hud-points">0</span>
+            </div>
+            <div class="hud-stat">
+              <span class="hud-stat-label">누적</span>
+              <span class="hud-stat-value" id="hud-total">0</span>
+            </div>
+          </div>
+        </div>
+        <div class="progress-bar-wrap">
+          <div id="progress-bar-fill" style="width: 0%"></div>
+        </div>
+        <div class="progress-labels">
+          <span id="q-counter">남은 문제: 20개</span>
+          <span id="progress-pct">0%</span>
+        </div>
+      </div>
+
+      <!-- 문제 영역 -->
+      <div class="question-area">
+        <div id="question-card">
+          <!-- 문제 메타 -->
+          <div class="question-meta">
+            <span class="question-badge" id="question-badge">주제</span>
+            <span class="question-unit" id="question-unit">단원</span>
+            <span class="diff-badge diff-medium" id="question-diff">보통</span>
+          </div>
+
+          <!-- 문제 텍스트 -->
+          <p id="question-text" style="font-size: 16px; font-weight: 600; line-height: 1.65; color: var(--dark); margin-bottom: 16px;"></p>
+
+          <!-- 선택지 -->
+          <div class="options-container" id="options-container"></div>
+
+          <!-- 해설 패널 -->
+          <div id="explanation-panel" class="hidden" style="margin-top: 14px;"></div>
+        </div>
+      </div>
+
+      <!-- 하단 액션 -->
+      <div class="action-row">
+        <button id="show-explanation-btn" class="hidden">📖 정답 해설 보기</button>
+        <button id="next-btn" class="hidden">다음 문제 →</button>
+      </div>
+
+      <!-- 피드백 팝업 -->
+      <div id="feedback-popup" class="feedback-popup hidden"></div>
+
+      <!-- 파티클 이펙트 -->
+      <div id="effect-layer"></div>
+    </section>
+
+    <!-- ===== 결과 화면 ===== -->
+    <section id="screen-result" class="hidden">
+      <header class="app-header">
+        <span class="logo">🏆</span>
+        <div>
+          <h1 id="result-round">라운드 완료!</h1>
+          <div class="header-sub">결과를 확인하세요</div>
+        </div>
+      </header>
+
+      <div style="padding: 20px;">
+        <!-- 헤더 -->
+        <div class="result-header">
+          <span class="result-emoji" id="result-emoji">🎉</span>
+          <div class="result-title">라운드 클리어!</div>
+          <span class="result-grade-tag" id="result-grade">🌟 훌륭해요!</span>
+        </div>
+
+        <!-- 결과 카드 -->
+        <div class="result-card">
+          <div class="result-stats-grid">
+            <div class="result-stat">
+              <div class="result-stat-value" id="result-correct">0</div>
+              <div class="result-stat-label">정답</div>
+            </div>
+            <div class="result-stat">
+              <div class="result-stat-value" id="result-total">20</div>
+              <div class="result-stat-label">전체 문제</div>
+            </div>
+            <div class="result-stat">
+              <div class="result-stat-value" id="result-accuracy">0%</div>
+              <div class="result-stat-label">정답률</div>
+            </div>
+          </div>
+          <div class="result-pts-row">
+            <span>이번 라운드 획득 점수</span>
+            <span class="big-pts">+<span id="result-pts">0</span>점</span>
+          </div>
+          <div style="margin-top: 10px;" class="result-pts-row">
+            <span>총 누적 점수</span>
+            <span class="big-pts"><span id="result-total-pts">0</span>점</span>
+          </div>
+        </div>
+
+        <!-- 보너스 -->
+        <div class="result-bonus" id="result-bonus">🎁 라운드 보너스: +200점</div>
+
+        <!-- 오답 목록 -->
+        <div class="wrong-summary">
+          <div class="wrong-summary-title">❌ 이번 라운드 틀린 문제</div>
+          <div id="wrong-list"></div>
+        </div>
+
+        <!-- 다음 액션 -->
+        <div class="result-actions">
+          <button id="btn-next-round" class="btn-primary">
+            ▶ 다음 라운드 시작
+          </button>
+          <button id="btn-retry-round" class="btn-secondary">
+            🔄 이 라운드 다시 도전
+          </button>
+          <button id="btn-home" class="btn-secondary">
+            🏠 홈으로
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- end app-container -->
+
+  <script src="js/questions.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // D-DAY 계산
+    (function() {
+      const examDate = new Date('2026-08-11');
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      examDate.setHours(0, 0, 0, 0);
+      const diff = Math.ceil((examDate - today) / (1000 * 60 * 60 * 24));
+      const el = document.getElementById('dday-text');
+      if (diff > 0) {
+        el.textContent = `⚡ 시험까지 D-${diff}! 지금 바로 시작하세요!`;
+      } else if (diff === 0) {
+        el.textContent = '🚨 오늘이 시험일! 화이팅! 🚨';
+      } else {
+        el.textContent = '✅ 시험 종료! 결과는 어떠셨나요?';
+      }
+    })();
+
+    // 총 문제 수 표시
+    document.getElementById('total-questions-count').textContent = QUESTIONS.length;
+
+    // D-DAY 배너 색상 업데이트
+    (function() {
+      const banner = document.getElementById('dday-banner');
+      const examDate = new Date('2026-08-11');
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      examDate.setHours(0, 0, 0, 0);
+      const diff = Math.ceil((examDate - today) / (1000 * 60 * 60 * 24));
+      if (diff <= 7 && diff > 0) banner.style.background = 'linear-gradient(135deg, #c0392b, #96281b)';
+    })();
+  </script>
+</body>
+</html>
